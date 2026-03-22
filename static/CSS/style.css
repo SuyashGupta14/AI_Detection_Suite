@@ -1,0 +1,1300 @@
+/* ═══════════════════════════════════════════════════
+   AI Detection Suite — style.css
+   1. Reset & Base
+   2. Nav
+   3. Homepage Cards
+   4. Shared (spinner, buttons, errors)
+   5. Model 1 — Video
+   6. Model 2 — Satellite
+   ═══════════════════════════════════════════════════ */
+
+/* ── 1. Reset ───────────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f0f13;
+    color: #e8e8e8;
+    min-height: 100vh;
+}
+
+/* ── 2. Nav ─────────────────────────────────────── */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 40px;
+    background: #16161e;
+    border-bottom: 1px solid #2a2a35;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    flex: 1;
+}
+
+.back {
+    color: #888;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color .2s;
+}
+
+.back:hover {
+    color: #fff;
+}
+
+.nav-badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.nav-badge.ready {
+    background: #1a3a2a;
+    color: #4caf82;
+}
+
+.nav-badge.error {
+    background: #3a1a1a;
+    color: #f06060;
+}
+
+/* ── 3. Homepage Cards ──────────────────────────── */
+.hero {
+    text-align: center;
+    padding: 60px 20px 30px;
+}
+
+.hero h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.hero p {
+    color: #888;
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 30px 60px 60px;
+    justify-content: center;
+}
+
+.card {
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 16px;
+    padding: 28px;
+    width: 200px;
+    text-decoration: none;
+    color: #e8e8e8;
+    transition: all .2s;
+}
+
+.card.active {
+    border-color: #6c63ff;
+    cursor: pointer;
+}
+
+.card.active:hover {
+    transform: translateY(-4px);
+    background: #1e1e2e;
+}
+
+.card.card-sat {
+    border-color: #4caf82;
+}
+
+.card.card-sat:hover {
+    border-color: #6dffb3;
+    background: #1e1e2e;
+}
+
+.card.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.card-num {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2a2a3a;
+    margin-bottom: 4px;
+}
+
+.card-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.card h3 {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+}
+
+.card.active .card-num {
+    color: #6c63ff;
+}
+
+.card.card-sat .card-num {
+    color: #4caf82;
+}
+
+.badge {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge.ready {
+    background: #1a3a2a;
+    color: #4caf82;
+}
+
+.badge.soon {
+    background: #2a2a35;
+    color: #666;
+}
+
+/* ── 4. Shared ──────────────────────────────────── */
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #2a2a35;
+    border-top-color: #6c63ff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-reset {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #2a2a3a;
+    color: #ccc;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background .2s;
+}
+
+.btn-reset:hover {
+    background: #3a3a4a;
+}
+
+.error-box {
+    text-align: center;
+    padding: 80px 20px;
+    color: #888;
+}
+
+.error-box h3 {
+    color: #f06060;
+    margin: 16px 0 8px;
+    font-size: 20px;
+}
+
+.error-box p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.error-box .hint {
+    font-size: 12px;
+    color: #555;
+    margin-top: 16px;
+    line-height: 2.2;
+}
+
+.error-box code {
+    background: #2a2a35;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #cba6f7;
+}
+
+/* ── 5. Model 1 — Video ─────────────────────────── */
+.model-page {
+    max-width: 580px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.upload-box {
+    border: 2px dashed #3a3a4a;
+    border-radius: 16px;
+    padding: 60px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.upload-box:hover {
+    border-color: #6c63ff;
+    background: #16161e;
+}
+
+.upload-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.upload-box p {
+    font-size: 16px;
+    color: #ccc;
+}
+
+.upload-box span {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+    display: block;
+}
+
+.loading {
+    text-align: center;
+    padding: 60px;
+}
+
+.result-box {
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.result-label {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.result-label.real {
+    background: #1a3a2a;
+    color: #4caf82;
+}
+
+.result-label.ai {
+    background: #3a1a1a;
+    color: #f06060;
+}
+
+.prob-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.prob-row span:first-child {
+    width: 30px;
+    color: #888;
+}
+
+.prob-row span:last-child {
+    width: 50px;
+    text-align: right;
+}
+
+.bar-track {
+    flex: 1;
+    background: #2a2a35;
+    border-radius: 6px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width .8s ease;
+    width: 0%;
+}
+
+.bar-fill.real {
+    background: #4caf82;
+}
+
+.bar-fill.ai {
+    background: #f06060;
+}
+
+.meta {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+}
+
+/* ── 6. Model 2 — Satellite ─────────────────────── */
+
+/* Info strip below nav */
+.info-strip {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 40px;
+    background: #13131a;
+    border-bottom: 1px solid #2a2a35;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px;
+}
+
+.info-label {
+    font-size: 10px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 3px;
+}
+
+.info-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ccc;
+}
+
+.info-val.green {
+    color: #4caf82;
+}
+
+.info-val.purple {
+    color: #cba6f7;
+}
+
+.info-val.blue {
+    color: #89b4fa;
+}
+
+.info-sep {
+    width: 1px;
+    height: 34px;
+    background: #2a2a35;
+}
+
+/* Split panel */
+.sat-page {
+    display: flex;
+    gap: 24px;
+    padding: 28px 40px 40px;
+    max-width: 1080px;
+    margin: 0 auto;
+}
+
+/* LEFT */
+.sat-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sat-upload {
+    flex: 1;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #3a3a4a;
+    border-radius: 16px;
+    padding: 40px;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+}
+
+.sat-upload:hover {
+    border-color: #4caf82;
+    background: #16161e;
+}
+
+.sat-upload .upload-icon {
+    font-size: 52px;
+    margin-bottom: 14px;
+}
+
+.sat-upload p {
+    font-size: 16px;
+    color: #ccc;
+}
+
+.sat-upload span {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+    display: block;
+}
+
+.sat-preview {
+    flex: 1;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sat-preview img {
+    flex: 1;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid #2a2a35;
+}
+
+.btn-change {
+    padding: 10px;
+    background: #2a2a3a;
+    color: #ccc;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background .2s;
+}
+
+.btn-change:hover {
+    background: #3a3a4a;
+}
+
+/* RIGHT */
+.sat-right {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sat-idle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.idle-icon {
+    font-size: 52px;
+}
+
+.sat-idle p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+}
+
+.class-hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.class-hints span {
+    background: #1e1e2e;
+    border: 1px solid #2a2a35;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #888;
+}
+
+.sat-loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    color: #888;
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 16px;
+}
+
+/* Result */
+.sat-result {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sat-result-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid #2a2a35;
+    background: #16161e;
+    transition: border-color .4s, background .4s;
+}
+
+.sat-emoji {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.sat-label {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.sat-desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.sat-conf {
+    font-size: 13px;
+    color: #999;
+}
+
+.sat-conf span {
+    font-size: 20px;
+    font-weight: 700;
+    color: #4caf82;
+}
+
+.conf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.conf-badge.high {
+    background: #1a3a2a;
+    color: #4caf82;
+}
+
+.conf-badge.medium {
+    background: #3a3020;
+    color: #f9e2af;
+}
+
+.conf-badge.low {
+    background: #3a1a1a;
+    color: #f06060;
+}
+
+.bars-wrap {
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.bars-title {
+    font-size: 10px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 14px;
+}
+
+.sat-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.sat-bar-row:last-child {
+    margin-bottom: 0;
+}
+
+.sat-bar-emoji {
+    width: 22px;
+    text-align: center;
+}
+
+.sat-bar-label {
+    width: 78px;
+    color: #aaa;
+    font-size: 12px;
+}
+
+.sat-bar-track {
+    flex: 1;
+    background: #2a2a35;
+    border-radius: 6px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.sat-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width .8s ease;
+    width: 0%;
+}
+
+.sat-bar-pct {
+    width: 40px;
+    text-align: right;
+    color: #888;
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width:780px) {
+    .sat-page {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .sat-right {
+        width: 100%;
+    }
+
+    .cards {
+        padding: 20px;
+    }
+
+    nav {
+        padding: 14px 20px;
+        flex-wrap: wrap;
+    }
+
+    .info-strip {
+        padding: 12px 20px;
+        justify-content: center;
+    }
+}
+
+
+/* ── 7. Model 3 — Credit Card Fraud ─────────────── */
+
+/* Homepage card accent */
+.card.card-fraud {
+    border-color: #f38ba8;
+}
+
+.card.card-fraud:hover {
+    border-color: #ff9eb5;
+    background: #1e1e2e;
+}
+
+.card.card-fraud .card-num {
+    color: #f38ba8;
+}
+
+/* Top bar: model selector + tabs */
+.fraud-topbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 40px;
+    background: #13131a;
+    border-bottom: 1px solid #2a2a35;
+}
+
+.fraud-select-label {
+    font-size: 12px;
+    color: #555;
+    margin-right: 4px;
+}
+
+.fraud-model-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.model-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #2a2a35;
+    background: #1e1e2e;
+    color: #888;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.model-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.model-btn.active {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 15%, transparent);
+    color: var(--accent);
+}
+
+/* Tab buttons */
+.fraud-tabs {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.tab-btn {
+    padding: 7px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    border: 1px solid #2a2a35;
+    background: #1e1e2e;
+    color: #888;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.tab-btn.active {
+    border-color: #6c63ff;
+    background: #1e1e2e;
+    color: #cdd6f4;
+}
+
+.tab-btn:hover {
+    border-color: #6c63ff;
+    color: #cdd6f4;
+}
+
+/* Tab content */
+.fraud-tab-content {
+    padding: 28px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ── Single Transaction ── */
+.fraud-single {
+    display: flex;
+    gap: 24px;
+}
+
+.fraud-form-wrap {
+    flex: 1;
+}
+
+.fraud-form-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.fraud-form-hint {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 16px;
+}
+
+.form-row-highlight {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: #16161e;
+    border: 1px solid #f38ba8;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.form-field label {
+    display: block;
+    font-size: 10px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: 4px;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 6px 8px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-size: 12px;
+    transition: border .2s;
+}
+
+.form-field input:focus {
+    outline: none;
+    border-color: #6c63ff;
+}
+
+.fraud-form-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-analyze {
+    padding: 11px 24px;
+    background: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background .2s;
+}
+
+.btn-analyze:hover {
+    background: #7c73ff;
+}
+
+.btn-clear {
+    padding: 11px 16px;
+    background: #2a2a3a;
+    color: #ccc;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background .2s;
+}
+
+.btn-clear:hover {
+    background: #3a3a4a;
+}
+
+/* Result panel */
+.fraud-result-panel {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.fraud-idle {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 16px;
+    padding: 30px;
+    color: #555;
+}
+
+.fraud-idle p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+}
+
+.fraud-idle-hints {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.fraud-idle-hints span {
+    background: #1e1e2e;
+    border: 1px solid #2a2a35;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #888;
+}
+
+.fraud-loading {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    color: #888;
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 16px;
+}
+
+.fraud-result {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.fraud-verdict {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 14px;
+    border: 1px solid #2a2a35;
+    background: #16161e;
+    transition: border-color .4s, background .4s;
+}
+
+.verdict-emoji {
+    font-size: 44px;
+    line-height: 1;
+}
+
+.verdict-label {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.verdict-conf {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 4px;
+}
+
+.verdict-conf span {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.verdict-model {
+    font-size: 11px;
+    color: #555;
+}
+
+.fraud-prob-wrap {
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.fraud-prob-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+}
+
+.fraud-prob-row:last-child {
+    margin-bottom: 0;
+}
+
+.fraud-prob-label {
+    width: 100px;
+    color: #aaa;
+    font-size: 12px;
+}
+
+.fraud-prob-pct {
+    width: 40px;
+    text-align: right;
+    color: #888;
+    font-size: 12px;
+}
+
+/* ── Bulk CSV ── */
+.fraud-bulk-page {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.fraud-upload {
+    border: 2px dashed #3a3a4a;
+    border-radius: 16px;
+    padding: 60px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.fraud-upload:hover {
+    border-color: #f38ba8;
+    background: #16161e;
+}
+
+.fraud-upload p {
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 12px;
+}
+
+.fraud-upload span {
+    font-size: 12px;
+    color: #555;
+    margin-top: 6px;
+    display: block;
+}
+
+.fraud-bulk-loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    color: #888;
+    padding: 60px;
+}
+
+/* Summary cards */
+.bulk-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.bulk-card {
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+}
+
+.bulk-card.legit {
+    border-color: #4caf82;
+}
+
+.bulk-card.fraud {
+    border-color: #f06060;
+}
+
+.bulk-card.pct {
+    border-color: #f9e2af;
+}
+
+.bulk-card-num {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.bulk-card.legit .bulk-card-num {
+    color: #4caf82;
+}
+
+.bulk-card.fraud .bulk-card-num {
+    color: #f06060;
+}
+
+.bulk-card.pct .bulk-card-num {
+    color: #f9e2af;
+}
+
+.bulk-card-label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Results table */
+.bulk-table-wrap {
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.bulk-table-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid #2a2a35;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cdd6f4;
+}
+
+.bulk-model-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #2a2a35;
+    color: #888;
+}
+
+.bulk-table-header .btn-clear {
+    margin-left: auto;
+}
+
+.table-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.bulk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.bulk-table thead th {
+    padding: 10px 18px;
+    background: #13131a;
+    color: #555;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+}
+
+.bulk-table tbody td {
+    padding: 10px 18px;
+    border-bottom: 1px solid #1e1e2e;
+    color: #ccc;
+}
+
+.bulk-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.bulk-table tbody tr:hover td {
+    background: #1a1a24;
+}
+
+.bulk-table tbody tr.fraud-row td {
+    background: #1f1218;
+}
+
+.bulk-table tbody tr.fraud-row:hover td {
+    background: #261420;
+}
+
+/* Responsive */
+@media (max-width:780px) {
+    .fraud-single {
+        flex-direction: column;
+    }
+
+    .fraud-result-panel {
+        width: 100%;
+    }
+
+    .bulk-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fraud-topbar {
+        padding: 12px 20px;
+    }
+
+    .fraud-tab-content {
+        padding: 20px;
+    }
+}
+
+/* ── Fraud form extras ─────────────────────── */
+.form-section-label {
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin: 14px 0 6px;
+}
+
+.form-row-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    background: #16161e;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 4px;
+}
+
+.form-field select {
+    width: 100%;
+    padding: 6px 8px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-size: 12px;
+}
+
+.form-field input[type="date"],
+.form-field input[type="datetime-local"] {
+    width: 100%;
+    padding: 6px 8px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-size: 12px;
+    color-scheme: dark;
+}
+
+@media (max-width:780px) {
+    .form-row-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

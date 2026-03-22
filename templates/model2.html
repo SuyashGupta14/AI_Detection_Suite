@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model 2 — Satellite Classifier</title>
+    <link rel="stylesheet" href="/static/CSS/style.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="back">← Back</a>
+        <span class="logo">Model 02 — Satellite Classifier</span>
+        {% if model_ready %}
+        <span class="nav-badge ready">{{ arch }} · {{ test_acc }}% test acc</span>
+        {% else %}
+        <span class="nav-badge error">Model not loaded</span>
+        {% endif %}
+    </nav>
+
+    {% if not model_ready %}
+    <!-- Model failed to load -->
+    <div class="model-page">
+        <div class="error-box">
+            <div style="font-size:48px">⚠️</div>
+            <h3>Model Not Loaded</h3>
+            <p>{{ model_error }}</p>
+            <p class="hint">
+                Place these files inside <code>ML_Models/SatelliteClassifier/</code><br><br>
+                <code>ResNet50_best.pth</code> &nbsp;or&nbsp; <code>CustomCNN_best.pth</code><br>
+                <code>satellite_meta.json</code>
+            </p>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- ── Model info strip ─────────────────────────────────── -->
+    <div class="info-strip">
+        <div class="info-item">
+            <span class="info-label">Best Model</span>
+            <span class="info-val">{{ arch }}</span>
+        </div>
+        <div class="info-sep"></div>
+        <div class="info-item">
+            <span class="info-label">ResNet50 Val Acc</span>
+            <span class="info-val green">{{ resnet_acc }}</span>
+        </div>
+        <div class="info-sep"></div>
+        <div class="info-item">
+            <span class="info-label">CustomCNN Val Acc</span>
+            <span class="info-val purple">{{ cnn_acc }}</span>
+        </div>
+        <div class="info-sep"></div>
+        <div class="info-item">
+            <span class="info-label">Test Accuracy</span>
+            <span class="info-val blue">{{ test_acc }}%</span>
+        </div>
+    </div>
+
+    <!-- ── Split panel ──────────────────────────────────────── -->
+    <div class="sat-page">
+
+        <!-- LEFT: upload + preview -->
+        <div class="sat-left">
+            <div class="sat-upload" id="uploadBox">
+                <input type="file" id="imageInput" accept="image/*" hidden>
+                <div class="upload-icon">🛰️</div>
+                <p>Click or drag satellite image here</p>
+                <span>JPG, PNG, WEBP supported</span>
+            </div>
+
+            <div class="sat-preview" id="previewBox" style="display:none">
+                <img id="previewImg" src="" alt="Satellite image">
+                <button class="btn-change" id="changeBtn">↩ Change Image</button>
+            </div>
+        </div>
+
+        <!-- RIGHT: results -->
+        <div class="sat-right">
+
+            <!-- Idle -->
+            <div class="sat-idle" id="idleState">
+                <div class="idle-icon">🌍</div>
+                <p>Upload a satellite image<br>to classify it</p>
+                <div class="class-hints">
+                    <span>☁️ Cloudy</span>
+                    <span>🏜️ Desert</span>
+                    <span>🌿 Green Area</span>
+                    <span>💧 Water</span>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="sat-loading" id="loadingState" style="display:none">
+                <div class="spinner"></div>
+                <p>Classifying image...</p>
+            </div>
+
+            <!-- Result -->
+            <div class="sat-result" id="resultState" style="display:none">
+
+                <div class="sat-result-card" id="resultCard">
+                    <div class="sat-emoji" id="resultEmoji">🌿</div>
+                    <div class="sat-info">
+                        <div class="sat-label" id="resultLabel">—</div>
+                        <div class="sat-desc" id="resultDesc">—</div>
+                        <div class="sat-conf">
+                            <span id="resultConf">—</span> confidence
+                            &nbsp;·&nbsp;
+                            <span id="confBadge" class="conf-badge">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bars-wrap">
+                    <div class="bars-title">Class Probabilities</div>
+                    <div id="satBars"></div>
+                </div>
+
+                <button class="btn-reset" id="resetBtn">Analyse Another Image</button>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <script src="/static/JS/model2.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+flask
+waitress
+torch
+torchvision
+opencv-python
+numpy
+pillow
+scikit-learn
+xgboost
+efficientnet-pytorch

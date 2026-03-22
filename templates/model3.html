@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model 3 — Credit Card Fraud Detection</title>
+    <link rel="stylesheet" href="/static/CSS/style.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="back">← Back</a>
+        <span class="logo">Model 03 — Credit Card Fraud Detection</span>
+        {% if model_ready %}
+        <span class="nav-badge ready">{{ available|length }} models ready</span>
+        {% else %}
+        <span class="nav-badge error">Model not loaded</span>
+        {% endif %}
+    </nav>
+
+    {% if not model_ready %}
+    <div class="model-page">
+        <div class="error-box">
+            <div style="font-size:48px">⚠️</div>
+            <h3>Models Not Loaded</h3>
+            <p>{{ model_error }}</p>
+            <p class="hint">
+                Place .pkl files inside <code>ML_Models/CreditCardFraud/</code><br><br>
+                <code>xgboost.pkl</code> &nbsp; <code>random_forest.pkl</code> &nbsp;
+                <code>ensemble.pkl</code><br>
+                <code>logistic_regression.pkl</code> &nbsp; <code>decision_tree.pkl</code>
+            </p>
+        </div>
+    </div>
+
+    {% else %}
+
+    <!-- ── Model comparison strip ───────────────────────── -->
+    <div class="info-strip" style="flex-wrap:wrap; gap:6px;">
+        {% for key, m in model_metrics.items() %}
+        {% if key in available %}
+        <div class="info-item">
+            <span class="info-label">{{ m.label }}</span>
+            <span class="info-val" {{ 'style="color:' ~ m.color ~ ';"'|safe }}>{{ m.accuracy }}</span>
+        </div>
+        {% if not loop.last %}<div class="info-sep"></div>{% endif %}
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- ── Model selector + tab switcher ────────────────── -->
+    <div class="fraud-topbar">
+
+        <div class="fraud-model-select">
+            <span class="fraud-select-label">Model:</span>
+            <div class="fraud-model-btns" id="modelBtns">
+                {% for key, m in model_metrics.items() %}
+                {% if key in available %}
+                <button class="model-btn {% if key == best_model %}active{% endif %}" data-key="{{ key }}"
+                    {{ 'style="--accent:' ~ m.color ~ ';"'|safe }}>
+                    {{ m.label }}
+                </button>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="fraud-tabs">
+            <button class="tab-btn active" data-tab="single">🔍 Single Transaction</button>
+            <button class="tab-btn" data-tab="bulk">📂 Bulk CSV Upload</button>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- TAB 1 — Single Transaction Form                  -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="fraud-tab-content" id="tab-single">
+        <div class="fraud-single">
+
+            <!-- LEFT: input form -->
+            <div class="fraud-form-wrap">
+                <div class="fraud-form-title">Transaction Details</div>
+                <p class="fraud-form-hint">Fill in the transaction info — matches your training dataset format</p>
+
+                <!-- Row 1: Date/Time + Amount -->
+                <div class="form-section-label">Core Details</div>
+                <div class="form-row-highlight">
+                    <div class="form-field">
+                        <label>Transaction Date & Time</label>
+                        <input type="datetime-local" id="f_trans_date_trans_time" value="2020-06-21T12:14:25">
+                    </div>
+                    <div class="form-field">
+                        <label>Amount ($)</label>
+                        <input type="number" id="f_amt" placeholder="e.g. 149.62" step="0.01" value="149.62">
+                    </div>
+                    <div class="form-field">
+                        <label>Category</label>
+                        <select id="f_category">
+                            {% for cat in categories %}
+                            <option value="{{ cat }}">{{ cat.replace('_', ' ').title() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Gender</label>
+                        <select id="f_gender">
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 2: Location -->
+                <div class="form-section-label">Location</div>
+                <div class="form-row-4">
+                    <div class="form-field">
+                        <label>Cardholder Lat</label>
+                        <input type="number" id="f_lat" placeholder="e.g. 33.9659" step="any" value="33.9659">
+                    </div>
+                    <div class="form-field">
+                        <label>Cardholder Long</label>
+                        <input type="number" id="f_long" placeholder="e.g. -80.9355" step="any" value="-80.9355">
+                    </div>
+                    <div class="form-field">
+                        <label>Merchant Lat</label>
+                        <input type="number" id="f_merch_lat" placeholder="e.g. 33.986" step="any" value="33.986">
+                    </div>
+                    <div class="form-field">
+                        <label>Merchant Long</label>
+                        <input type="number" id="f_merch_long" placeholder="e.g. -81.200" step="any" value="-81.200">
+                    </div>
+                </div>
+
+                <!-- Row 3: Demographics -->
+                <div class="form-section-label">Cardholder Info</div>
+                <div class="form-row-4">
+                    <div class="form-field">
+                        <label>Date of Birth</label>
+                        <input type="date" id="f_dob" value="1968-03-19">
+                    </div>
+                    <div class="form-field">
+                        <label>City Population</label>
+                        <input type="number" id="f_city_pop" placeholder="e.g. 333497" value="333497">
+                    </div>
+                    <div class="form-field">
+                        <label>State</label>
+                        <input type="text" id="f_state" placeholder="e.g. SC" value="SC" maxlength="2">
+                    </div>
+                    <div class="form-field">
+                        <label>ZIP Code</label>
+                        <input type="number" id="f_zip" placeholder="e.g. 29209" value="29209">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="fraud-form-actions">
+                    <button class="btn-analyze" onclick="analyzeSingle()">🔍 Analyze Transaction</button>
+                    <button class="btn-clear" onclick="fillSample(false)">✅ Load Legit Sample</button>
+                    <button class="btn-clear" onclick="fillSample(true)">🚨 Load Fraud Sample</button>
+                    <button class="btn-clear" onclick="clearForm()">Clear</button>
+                </div>
+            </div>
+
+            <!-- RIGHT: result panel -->
+            <div class="fraud-result-panel">
+
+                <div class="fraud-idle" id="singleIdle">
+                    <div style="font-size:52px">💳</div>
+                    <p>Fill in the transaction<br>details and click Analyze</p>
+                    <div class="fraud-idle-hints">
+                        <span>Real transaction features</span>
+                        <span>Amount · Category · Location</span>
+                        <span>Demographics · Time patterns</span>
+                    </div>
+                </div>
+
+                <div class="fraud-loading" id="singleLoading" style="display:none">
+                    <div class="spinner"></div>
+                    <p>Analyzing transaction...</p>
+                </div>
+
+                <div class="fraud-result" id="singleResult" style="display:none">
+
+                    <div class="fraud-verdict" id="verdictCard">
+                        <div class="verdict-emoji" id="verdictEmoji">✅</div>
+                        <div class="verdict-info">
+                            <div class="verdict-label" id="verdictLabel">Legitimate</div>
+                            <div class="verdict-conf">
+                                <span id="verdictConf">—</span> confidence
+                                &nbsp;·&nbsp;
+                                <span id="verdictBadge" class="conf-badge">—</span>
+                            </div>
+                            <div class="verdict-model" id="verdictModel">—</div>
+                        </div>
+                    </div>
+
+                    <div class="fraud-prob-wrap">
+                        <div class="bars-title">Probability Breakdown</div>
+                        <div class="fraud-prob-row">
+                            <span class="fraud-prob-label">✅ Legitimate</span>
+                            <div class="bar-track">
+                                <div class="bar-fill real" id="legitBar" style="width:0%"></div>
+                            </div>
+                            <span id="legitPct" class="fraud-prob-pct">0%</span>
+                        </div>
+                        <div class="fraud-prob-row">
+                            <span class="fraud-prob-label">🚨 Fraudulent</span>
+                            <div class="bar-track">
+                                <div class="bar-fill ai" id="fraudBar" style="width:0%"></div>
+                            </div>
+                            <span id="fraudPct" class="fraud-prob-pct">0%</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-reset" onclick="resetSingle()">Analyze Another</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- TAB 2 — Bulk CSV                                 -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="fraud-tab-content" id="tab-bulk" style="display:none">
+        <div class="fraud-bulk-page">
+
+            <div class="fraud-upload" id="csvUploadBox">
+                <input type="file" id="csvInput" accept=".csv" hidden>
+                <div style="font-size:48px">📂</div>
+                <p>Click or drag CSV file here</p>
+                <span>Must have columns: trans_date_trans_time, amt, category, gender, city_pop, dob, lat, long,
+                    merch_lat, merch_long</span>
+            </div>
+
+            <div class="fraud-bulk-loading" id="bulkLoading" style="display:none">
+                <div class="spinner"></div>
+                <p>Processing transactions...</p>
+            </div>
+
+            <div id="bulkResults" style="display:none">
+                <div class="bulk-summary">
+                    <div class="bulk-card total">
+                        <div class="bulk-card-num" id="summTotal">0</div>
+                        <div class="bulk-card-label">Total Transactions</div>
+                    </div>
+                    <div class="bulk-card legit">
+                        <div class="bulk-card-num" id="summLegit">0</div>
+                        <div class="bulk-card-label">✅ Legitimate</div>
+                    </div>
+                    <div class="bulk-card fraud">
+                        <div class="bulk-card-num" id="summFraud">0</div>
+                        <div class="bulk-card-label">🚨 Fraudulent</div>
+                    </div>
+                    <div class="bulk-card pct">
+                        <div class="bulk-card-num" id="summPct">0%</div>
+                        <div class="bulk-card-label">Fraud Rate</div>
+                    </div>
+                </div>
+
+                <div class="bulk-table-wrap">
+                    <div class="bulk-table-header">
+                        <span>Results</span>
+                        <span id="bulkModelUsed" class="bulk-model-tag">—</span>
+                        <span id="bulkModelAcc" class="bulk-model-tag">—</span>
+                        <button class="btn-clear" onclick="resetBulk()">Upload Another</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="bulk-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Amount</th>
+                                    <th>Merchant</th>
+                                    <th>Category</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bulkTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <script src="/static/JS/model3.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+trans_date_trans_time,merchant,category,amt,gender,city,state,lat,long,city_pop,job,dob,merch_lat,merch_long,zip
+2020-06-21 12:14:25,fraud_Kirlin and Sons,personal_care,2.86,M,Columbia,SC,33.9659,-80.9355,333497,Mechanical engineer,1968-03-19,33.986,-81.200,29209
+2020-06-21 09:30:00,fraud_Rippin Inc,grocery_pos,45.00,F,Houston,TX,29.7604,-95.3698,2100263,Nurse,1985-07-22,29.800,-95.400,77001
+2020-06-21 14:22:10,fraud_Swaniawski Ltd,gas_transport,32.19,M,Denver,CO,39.7392,-104.9903,600158,Software developer,1990-11-05,39.750,-104.880,80201
+2020-06-21 02:30:00,fraud_Haley Group,shopping_net,1842.99,F,Hempstead,NY,40.6729,-73.5365,302,Accountant,1990-01-17,33.986,-81.200,11710
+2020-06-21 03:15:00,fraud_Johns Inc,misc_net,987.50,M,Smithtown,NY,40.8559,-73.2004,25000,Teacher,1975-04-30,34.120,-82.500,11787
+2020-06-21 01:45:00,fraud_Block LLC,shopping_net,2499.99,F,Riverside,CA,33.9533,-117.3962,303871,Marketing manager,1982-09-14,40.500,-74.200,92501
+2020-06-21 10:05:30,fraud_Beier Inc,food_dining,18.75,M,Chicago,IL,41.8781,-87.6298,2695598,Civil engineer,1979-06-11,41.890,-87.650,60601
+2020-06-21 16:40:00,fraud_Rowe Group,health_fitness,65.00,F,Austin,TX,30.2672,-97.7431,790390,Data analyst,1993-02-28,30.280,-97.760,78701
+2020-06-21 11:20:15,fraud_Willms LLC,grocery_net,129.40,M,Seattle,WA,47.6062,-122.3321,608660,Product manager,1987-12-03,47.620,-122.350,98101
+2020-06-21 04:00:00,fraud_Stiedemann Inc,travel,3200.00,M,Portland,OR,45.5051,-122.6750,583776,Graphic designer,1995-08-19,33.100,-80.100,97201
+2020-06-21 13:55:00,fraud_Becker PLC,misc_pos,22.50,F,Miami,FL,25.7617,-80.1918,399457,Pharmacist,1970-10-25,25.780,-80.200,33101
+2020-06-21 15:10:00,fraud_Schmidt Group,home,350.00,M,Phoenix,AZ,33.4484,-112.0740,1445632,Architect,1984-03-07,33.460,-112.090,85001
+2020-06-21 02:05:00,fraud_Keebler Inc,entertainment,4500.00,F,Boston,MA,42.3601,-71.0589,617594,Consultant,1991-05-20,38.200,-76.500,02101
+2020-06-21 08:30:00,fraud_Hahn Ltd,kids_pets,55.99,M,San Diego,CA,32.7157,-117.1611,1307402,Veterinarian,1988-01-15,32.730,-117.180,92101
+2020-06-21 03:50:00,fraud_Cole Group,shopping_pos,1575.00,F,Atlanta,GA,33.7490,-84.3880,420003,Attorney,1977-11-30,40.200,-75.300,30301
