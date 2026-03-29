@@ -389,6 +389,27 @@ nav {
     text-align: center;
 }
 
+.record-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.rec-status {
+    font-size: 12px;
+    color: #888;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.rec-status.active {
+    color: #f9e2af;
+    background: #3a3020;
+}
+
 /* ── 6. Model 2 — Satellite ─────────────────────── */
 
 /* Info strip below nav */

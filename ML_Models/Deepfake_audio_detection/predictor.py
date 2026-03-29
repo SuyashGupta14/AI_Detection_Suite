@@ -33,6 +33,56 @@ _scaler_path = None
 _feature_count = None
 
 
+def _normalize_label(v):
+    return str(v).strip().lower()
+
+
+def _resolve_class_indices(model, n_classes: int):
+    """
+    Resolve fake/real probability indices robustly from model.classes_.
+    Falls back to binary convention (0=real, 1=fake) when uncertain.
+    """
+    fake_aliases = {
+        "1", "fake", "ai", "ai_generated", "deepfake", "synthetic", "yes", "true", "positive"
+    }
+    real_aliases = {"0", "real", "human", "genuine", "authentic", "no", "false", "negative"}
+
+    classes = getattr(model, "classes_", None)
+    if classes is not None:
+        norm_classes = [_normalize_label(c) for c in classes]
+
+        # Prefer explicit fake/real labels if present
+        for i, c in enumerate(norm_classes):
+            if c in fake_aliases:
+                fake_idx = i
+                real_idx = 1 - i if n_classes == 2 else 0
+                return fake_idx, real_idx
+
+        for i, c in enumerate(norm_classes):
+            if c in real_aliases:
+                real_idx = i
+                fake_idx = 1 - i if n_classes == 2 else min(1, n_classes - 1)
+                return fake_idx, real_idx
+
+        # Numeric convention where class 1 means fake
+        for i, c in enumerate(classes):
+            if c == 1:
+                fake_idx = i
+                real_idx = 1 - i if n_classes == 2 else 0
+                return fake_idx, real_idx
+
+        for i, c in enumerate(classes):
+            if c == 0:
+                real_idx = i
+                fake_idx = 1 - i if n_classes == 2 else min(1, n_classes - 1)
+                return fake_idx, real_idx
+
+    # Safe fallback
+    if n_classes >= 2:
+        return 1, 0
+    return 0, 0
+
+
 def _first_existing(candidates):
     for name in candidates:
         path = MODEL_DIR / name
@@ -42,7 +92,13 @@ def _first_existing(candidates):
 
 
 try:
-    _model_path = _first_existing(["best_model.pkl", "deepfake_audio_model.pkl"])
+    # Prefer explicit RandomForest artifact names first.
+    _model_path = _first_existing([
+        "random_forest.pkl",
+        "rf_model.pkl",
+        "best_model.pkl",
+        "deepfake_audio_model.pkl",
+    ])
     _scaler_path = _first_existing(["scaler.pkl"])
 
     if _model_path is None:
@@ -57,6 +113,8 @@ try:
     # but predict_proba still references self.multi_class internally
     if not hasattr(_model, 'multi_class'):
         _model.multi_class = 'auto'
+
+    
 
     if hasattr(_scaler, "mean_"):
         _feature_count = int(_scaler.mean_.shape[0])
@@ -135,14 +193,19 @@ def _extract_features(file_path: str) -> np.ndarray:
 
 def _predict_audio(file_path: str) -> dict:
     feat = _extract_features(file_path)
+    if feat is None:
+        raise ValueError("Could not extract features from audio")
+
     feat_scaled = _scaler.transform(feat)
 
     if hasattr(_model, "predict_proba"):
-        proba = _model.predict_proba(feat_scaled)[0]
+        proba = np.asarray(_model.predict_proba(feat_scaled)[0], dtype=float)
+        # Match Gradio behavior: index 0 = Real, index 1 = Fake
         real_prob = float(proba[0]) * 100
         fake_prob = float(proba[1]) * 100
     else:
         pred = int(_model.predict(feat_scaled)[0])
+        # fallback mapping
         fake_prob = 100.0 if pred == 1 else 0.0
         real_prob = 100.0 - fake_prob
 
@@ -157,11 +220,11 @@ def _predict_audio(file_path: str) -> dict:
         "real_prob": round(real_prob, 2),
         "fake_prob": round(fake_prob, 2),
         "conf_level": conf_level,
-        "emoji": "🔴" if is_fake else "🟢",
+        "emoji": "??" if is_fake else "??",
         "model_used": type(_model).__name__,
         "features": int(_feature_count or feat.shape[1]),
+        "is_fake": is_fake
     }
-
 
 @deepfake_bp.route("/model4")
 def page():

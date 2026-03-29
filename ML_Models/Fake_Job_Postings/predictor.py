@@ -24,6 +24,51 @@ _model_path = None
 _vectorizer_path = None
 
 
+def _normalize_label(v):
+    return str(v).strip().lower()
+
+
+def _resolve_class_indices(model, n_classes: int):
+    """
+    Resolve fake/real indices from model.classes_.
+    Handles numeric or string labels and unexpected class ordering.
+    """
+    fake_aliases = {"1", "fake", "fraud", "fraudulent", "spam", "yes", "true", "positive"}
+    real_aliases = {"0", "real", "legit", "legitimate", "genuine", "no", "false", "negative"}
+
+    classes = getattr(model, "classes_", None)
+    if classes is not None:
+        norm_classes = [_normalize_label(c) for c in classes]
+
+        for i, c in enumerate(norm_classes):
+            if c in fake_aliases:
+                fake_idx = i
+                real_idx = 1 - i if n_classes == 2 else 0
+                return fake_idx, real_idx
+
+        for i, c in enumerate(norm_classes):
+            if c in real_aliases:
+                real_idx = i
+                fake_idx = 1 - i if n_classes == 2 else min(1, n_classes - 1)
+                return fake_idx, real_idx
+
+        for i, c in enumerate(classes):
+            if c == 1:
+                fake_idx = i
+                real_idx = 1 - i if n_classes == 2 else 0
+                return fake_idx, real_idx
+
+        for i, c in enumerate(classes):
+            if c == 0:
+                real_idx = i
+                fake_idx = 1 - i if n_classes == 2 else min(1, n_classes - 1)
+                return fake_idx, real_idx
+
+    if n_classes >= 2:
+        return 1, 0
+    return 0, 0
+
+
 def _first_existing(candidates):
     for name in candidates:
         path = MODEL_DIR / name
@@ -78,8 +123,9 @@ def _predict_text(text: str) -> dict:
 
     if hasattr(_model, "predict_proba"):
         proba = _model.predict_proba(vec)[0]
-        real_prob = float(proba[0]) * 100
-        fake_prob = float(proba[1]) * 100
+        fake_idx, real_idx = _resolve_class_indices(_model, len(proba))
+        fake_prob = float(proba[fake_idx]) * 100
+        real_prob = float(proba[real_idx]) * 100
     else:
         fake_prob = 100.0 if pred == 1 else 0.0
         real_prob = 100.0 - fake_prob
