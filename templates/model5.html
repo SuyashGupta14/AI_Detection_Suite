@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model 5 - Fake Job Posting Detection</title>
+    <link rel="stylesheet" href="/static/CSS/style.css">
+</head>
+
+<body>
+
+    <nav>
+        <a href="/" class="back">← Back</a>
+        <span class="logo">Model 05 - Fake Job Posting Detection</span>
+        {% if model_ready %}
+        <span class="nav-badge ready">{{ model_name }} · {{ vectorizer_name }}</span>
+        {% else %}
+        <span class="nav-badge error">Model not loaded</span>
+        {% endif %}
+    </nav>
+
+    {% if not model_ready %}
+    <div class="model-page">
+        <div class="error-box">
+            <div style="font-size:48px">⚠️</div>
+            <h3>Model Not Loaded</h3>
+            <p>{{ model_error }}</p>
+            <p class="hint">
+                Place these files inside <code>ML_Models/Fake_Job_Postings/</code><br><br>
+                <code>{{ model_file }}</code> &nbsp; <code>{{ vectorizer_file }}</code>
+            </p>
+        </div>
+    </div>
+    {% else %}
+
+    <div class="info-strip">
+        <div class="info-item">
+            <span class="info-label">Classifier</span>
+            <span class="info-val">{{ model_name }}</span>
+        </div>
+        <div class="info-sep"></div>
+        <div class="info-item">
+            <span class="info-label">Text Vectorizer</span>
+            <span class="info-val blue">{{ vectorizer_name }}</span>
+        </div>
+    </div>
+
+    <div class="fraud-topbar">
+        <div class="fraud-tabs" style="margin-left:0;">
+            <button class="tab-btn active" data-tab="single">📝 Single Posting</button>
+            <button class="tab-btn" data-tab="bulk">📂 Bulk CSV Upload</button>
+        </div>
+    </div>
+
+    <div class="fraud-tab-content" id="tab-single">
+        <div class="job-wrap">
+            <div class="job-form">
+                <div class="fraud-form-title">Job Posting Text</div>
+                <p class="fraud-form-hint">Paste complete posting text (title, description, requirements, benefits)</p>
+
+                <textarea id="jobText" class="job-textarea" placeholder="Paste a full job posting here..."></textarea>
+
+                <div class="fraud-form-actions">
+                    <button class="btn-analyze" onclick="analyzeFakeJobText()">🔍 Analyze Posting</button>
+                    <button class="btn-clear" onclick="loadJobSample()">Load Sample</button>
+                    <button class="btn-clear" onclick="clearJobText()">Clear</button>
+                </div>
+            </div>
+
+            <div class="fraud-result-panel">
+                <div class="fraud-idle" id="jobIdle">
+                    <div style="font-size:52px">📄</div>
+                    <p>Paste a job posting text<br>and click Analyze</p>
+                    <div class="fraud-idle-hints">
+                        <span>Looks at text patterns</span>
+                        <span>Suspicious hiring language</span>
+                        <span>Spam or fake intent signals</span>
+                    </div>
+                </div>
+
+                <div class="fraud-loading" id="jobLoading" style="display:none">
+                    <div class="spinner"></div>
+                    <p>Analyzing posting...</p>
+                </div>
+
+                <div class="fraud-result" id="jobResult" style="display:none">
+                    <div class="fraud-verdict" id="jobVerdictCard">
+                        <div class="verdict-emoji" id="jobVerdictEmoji">✅</div>
+                        <div class="verdict-info">
+                            <div class="verdict-label" id="jobVerdictLabel">Real Job Posting</div>
+                            <div class="verdict-conf">
+                                <span id="jobVerdictConf">-</span> confidence
+                                &nbsp;·&nbsp;
+                                <span id="jobVerdictBadge" class="conf-badge">-</span>
+                            </div>
+                            <div class="verdict-model" id="jobVerdictModel">-</div>
+                        </div>
+                    </div>
+
+                    <div class="fraud-prob-wrap">
+                        <div class="bars-title">Probability Breakdown</div>
+                        <div class="fraud-prob-row">
+                            <span class="fraud-prob-label">✅ Real</span>
+                            <div class="bar-track">
+                                <div class="bar-fill real" id="jobRealBar" style="width:0%"></div>
+                            </div>
+                            <span id="jobRealPct" class="fraud-prob-pct">0%</span>
+                        </div>
+                        <div class="fraud-prob-row">
+                            <span class="fraud-prob-label">⚠️ Fake</span>
+                            <div class="bar-track">
+                                <div class="bar-fill ai" id="jobFakeBar" style="width:0%"></div>
+                            </div>
+                            <span id="jobFakePct" class="fraud-prob-pct">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fraud-tab-content" id="tab-bulk" style="display:none">
+        <div class="fraud-bulk-page">
+
+            <div class="fraud-upload" id="jobCsvUploadBox">
+                <input type="file" id="jobCsvInput" accept=".csv" hidden>
+                <div style="font-size:48px">📂</div>
+                <p>Click or drag CSV file here</p>
+                <span>CSV should include text columns like description/title/requirements</span>
+            </div>
+
+            <div class="fraud-bulk-loading" id="jobBulkLoading" style="display:none">
+                <div class="spinner"></div>
+                <p>Processing job postings...</p>
+            </div>
+
+            <div id="jobBulkResults" style="display:none">
+                <div class="bulk-summary">
+                    <div class="bulk-card total">
+                        <div class="bulk-card-num" id="jobSummTotal">0</div>
+                        <div class="bulk-card-label">Total Postings</div>
+                    </div>
+                    <div class="bulk-card legit">
+                        <div class="bulk-card-num" id="jobSummReal">0</div>
+                        <div class="bulk-card-label">✅ Real</div>
+                    </div>
+                    <div class="bulk-card fraud">
+                        <div class="bulk-card-num" id="jobSummFake">0</div>
+                        <div class="bulk-card-label">⚠️ Fake</div>
+                    </div>
+                    <div class="bulk-card pct">
+                        <div class="bulk-card-num" id="jobSummPct">0%</div>
+                        <div class="bulk-card-label">Fake Rate</div>
+                    </div>
+                </div>
+
+                <div class="bulk-table-wrap">
+                    <div class="bulk-table-header">
+                        <span>Results</span>
+                        <span id="jobBulkModelUsed" class="bulk-model-tag">-</span>
+                        <span id="jobBulkVectorizer" class="bulk-model-tag">-</span>
+                        <button class="btn-clear" onclick="resetJobBulk()">Upload Another</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="bulk-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Preview</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobBulkTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <script src="/static/JS/model5.js"></script>
+</body>
+
+</html>

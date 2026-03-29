@@ -8,3 +8,6 @@ pillow
 scikit-learn
 xgboost
 efficientnet-pytorch
+joblib
+pandas
+librosa

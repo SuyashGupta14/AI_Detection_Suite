@@ -17,6 +17,8 @@ sys.path.insert(0, str(BASE / "ML_Models"))
 from Real_AI_Video.predictor       import video_bp
 from SatelliteClassifier.predictor import satellite_bp
 from CC_Fraud_Det_model.predictor  import fraud_bp      # ← correct folder name
+from Deepfake_audio_detection.predictor import deepfake_bp
+from Fake_Job_Postings.predictor import fake_job_bp
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"]      = str(BASE / "static" / "temp")
@@ -28,8 +30,8 @@ os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 app.register_blueprint(video_bp)        # /model1   /predict
 app.register_blueprint(satellite_bp)    # /model2   /predict_satellite
 app.register_blueprint(fraud_bp)        # /model3   /predict_fraud_single  /predict_fraud_csv
-# app.register_blueprint(model4_bp)
-# app.register_blueprint(model5_bp)
+app.register_blueprint(deepfake_bp)     # /model4   /predict_audio_deepfake
+app.register_blueprint(fake_job_bp)     # /model5   /predict_fake_job  /predict_fake_job_csv
 
 @app.route("/")
 def home():

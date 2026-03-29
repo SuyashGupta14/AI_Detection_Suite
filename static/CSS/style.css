@@ -160,6 +160,32 @@ nav {
     color: #4caf82;
 }
 
+.card.card-audio {
+    border-color: #f5c76f;
+}
+
+.card.card-audio:hover {
+    border-color: #ffd98c;
+    background: #1e1e2e;
+}
+
+.card.card-audio .card-num {
+    color: #f5c76f;
+}
+
+.card.card-job {
+    border-color: #7dc4ff;
+}
+
+.card.card-job:hover {
+    border-color: #9ad3ff;
+    background: #1e1e2e;
+}
+
+.card.card-job .card-num {
+    color: #7dc4ff;
+}
+
 .badge {
     display: inline-block;
     margin-top: 14px;
@@ -1296,5 +1322,41 @@ nav {
 @media (max-width:780px) {
     .form-row-4 {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* ── 8. Model 5 - Fake Jobs ───────────────────── */
+.job-wrap {
+    display: flex;
+    gap: 24px;
+}
+
+.job-form {
+    flex: 1;
+}
+
+.job-textarea {
+    width: 100%;
+    min-height: 290px;
+    resize: vertical;
+    padding: 14px;
+    background: #0f0f13;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    color: #e8e8e8;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.job-textarea:focus {
+    outline: none;
+    border-color: #7dc4ff;
+}
+
+@media (max-width:780px) {
+    .job-wrap {
+        flex-direction: column;
     }
 }
