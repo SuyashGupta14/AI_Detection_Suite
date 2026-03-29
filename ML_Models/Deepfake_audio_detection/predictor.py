@@ -53,6 +53,11 @@ try:
     _model = joblib.load(_model_path)
     _scaler = joblib.load(_scaler_path)
 
+    # Fix for scikit-learn 1.5+ which removed 'multi_class' constructor param
+    # but predict_proba still references self.multi_class internally
+    if not hasattr(_model, 'multi_class'):
+        _model.multi_class = 'auto'
+
     if hasattr(_scaler, "mean_"):
         _feature_count = int(_scaler.mean_.shape[0])
 

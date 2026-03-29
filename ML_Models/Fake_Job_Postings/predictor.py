@@ -44,6 +44,11 @@ try:
     _model = joblib.load(_model_path)
     _vectorizer = joblib.load(_vectorizer_path)
 
+    # Fix for scikit-learn 1.5+ which removed 'multi_class' constructor param
+    # but predict_proba still references self.multi_class internally
+    if not hasattr(_model, 'multi_class'):
+        _model.multi_class = 'auto'
+
     _ready = True
     print(
         "  ✅ Model 5 ready - "
